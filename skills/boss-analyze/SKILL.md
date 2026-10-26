@@ -108,3 +108,9 @@ python scripts/match.py \
 1. 用 `present_files` 打开 HTML 报告
 2. 文字汇报 3–5 条关键结论（岗位集中在哪、薪资中位、最该投哪几个、共同缺口）
 3. 说明报告与 CSV 路径
+
+## Windows 速查
+
+- 解释器：`.venv/Scripts/python.exe scripts/analyze.py ...`（macOS/Linux 是 `.venv/bin/python`）
+- 路径用正斜杠，`data/`、`reports/` 相对**当前工作目录**
+- 报告用浏览器直接双击打开即可；若在 `127.0.0.1` 预览服务里看，务必确认链接已是绝对地址（脚本有自检）

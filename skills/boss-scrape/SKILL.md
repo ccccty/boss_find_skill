@@ -119,3 +119,13 @@ python scripts/scraper.py \
 ## 合规
 
 仅供个人求职研究。抓取的是登录后可见的公开岗位信息，不要用于商业采集、转卖数据或高频轮询。
+
+## Windows 速查
+
+| 场景 | Windows（Git Bash / CMD） | macOS / Linux |
+|---|---|---|
+| 激活 venv | `source .venv/Scripts/activate` | `source .venv/bin/activate` |
+| 直接调用解释器 | `.venv/Scripts/python.exe scripts/scraper.py ...` | `.venv/bin/python scripts/scraper.py ...` |
+| 建 venv | `python -m venv .venv`（Windows 没有 `python3`） | `python3 -m venv .venv` |
+
+路径一律用正斜杠 `/`，Git Bash 也能识别 `E:/工作/boss-jobs` 这类路径；`data/`、`reports/` 都相对于**当前工作目录**，三个 skill 要在同一个项目目录下跑。
