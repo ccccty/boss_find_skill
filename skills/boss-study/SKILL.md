@@ -14,6 +14,25 @@ description: 把BOSS直聘岗位需求变成可背诵的领域概念卡片，并
 
 ---
 
+## 〇 · 固定站点（先读这条）
+
+**目前只维护一个站：<https://ccccty.github.io/study/>** —— 仓库 `ccccty/study`，本地 `E:/工作/个人简介/study`（仓库根就是站点根）。
+
+- 站点已经在跑，**不要再新建第二个学习站仓库**，也不要把卡片数据写到别的仓库（简历仓库 `E:/工作/个人简介/` 里已经没有学习卡片相关内容）
+- 该站是「内置卡 + 增量卡」结构：129 张内置卡在 `index.html` 的 `RAW` 数组里（**只读，不改**），每日新增只追加 `cards.json`
+- 每日追加用站点自带的脚本，在仓库根执行：
+  ```bash
+  python tools/merge_cards.py candidates/2026-10-27.json --dry-run
+  python tools/merge_cards.py candidates/2026-10-27.json
+  git add cards.json candidates/ && git commit -m "cards: 2026-10-27 新增 5 张" && git push
+  ```
+- 写卡规范以站点内的 `tools/jd_to_cards.md` 为准（与本技能 `references/card_writing.md` 同源）
+- **不要**用下面的 `build_site.py` 去重建这个站——它是 v1 结构（内置卡 + 增量），重建会丢掉内置卡和已有的复习进度
+
+只有用户明确说「另起一个领域的站」时，才走第六节的 `build_site.py` 流程。
+
+---
+
 ## 什么时候用
 
 | 场景 | 用不用 |
@@ -139,6 +158,10 @@ python scripts/extract_terms.py --input data/xxx_detail.json --out data/terms.js
 
 ## 五 · 入池：校验 + 幂等写入
 
+固定站点（`ccccty/study`）已经自带上这一步，在仓库根直接跑 `python tools/merge_cards.py <候选卡> [--dry-run]` 即可，**不用 `--cards` 参数**（路径写死在仓库里）。
+
+新起一个站时，用本技能自带的脚本：
+
 ```bash
 # 先看会新增什么、拒收什么
 python scripts/merge_cards.py --cards ../my-study/cards.json \
@@ -213,6 +236,8 @@ merge_cards.py --dry-run 看拒收原因 → 正式写入
    ↓
 git commit cards.json && git push     ← 手机打开即拿到新卡
 ```
+
+挂在固定站点上时，全流程都在 `E:/工作/个人简介/study` 一个目录里完成，**只有一次 commit 一次 push**，不碰任何其他仓库。
 
 手机端**不需要做任何更新操作**：页面每次打开都带 `?t=时间戳` 拉 `cards.json`。
 只有改了 `index.html` 本身才需点「刷新题库」。
