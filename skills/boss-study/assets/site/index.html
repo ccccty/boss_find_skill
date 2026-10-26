@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f5f6fa">
+<title>工程概念 · 每日一推</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icons/icon-192.png">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="概念卡">
+<meta name="description" content="面向感知融合与机器人方向：每天推几个工程概念，间隔重复记牢。">
+<style>
+:root{
+  --bg:#f5f6fa; --card:#ffffff; --ink:#131a2a; --ink2:#4b5568; --ink3:#8b93a5;
+  --line:#e4e7ef; --accent:#1b4b8f; --accent-2:#2563a8; --soft:#eef2fa;
+  --teal:#0d9488; --warn:#c2760a; --danger:#c0392b; --radius:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  background:var(--bg);color:var(--ink);line-height:1.65;
+  -webkit-font-smoothing:antialiased;padding-bottom:56px;
+  font-variant-numeric:tabular-nums;
+}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px}
+
+/* ---------- header ---------- */
+header.top{position:sticky;top:0;z-index:30;background:rgba(245,246,250,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.top__bar{height:3px;background:var(--line)}
+.top__fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--teal));transition:width .35s ease}
+.top__in{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px 10px}
+.brand{display:flex;align-items:center;gap:9px;font-weight:700;font-size:15px;letter-spacing:.3px}
+.mark{width:22px;height:22px;border-radius:7px;background:linear-gradient(135deg,var(--accent),#3b7dd8);position:relative;flex:none}
+.mark::after{content:"";position:absolute;inset:6px;border-radius:50%;border:1.5px solid #fff;opacity:.9}
+.mark::before{content:"";position:absolute;left:60%;top:50%;width:9px;height:1.5px;background:#fff;transform-origin:0 50%;transform:rotate(-38deg)}
+.top__meta{display:flex;align-items:center;gap:14px;font-size:12.5px;color:var(--ink3)}
+.top__meta b{color:var(--accent);font-weight:700}
+.streak{display:inline-flex;align-items:center;gap:4px}
+.streak.on{color:#c2760a}
+
+/* ---------- tabs ---------- */
+nav.tabs{display:flex;gap:6px;background:var(--soft);padding:4px;border-radius:12px;margin:14px 0 18px}
+nav.tabs button{flex:1;padding:8px 6px;border-radius:9px;font-size:13.5px;font-weight:600;color:var(--ink2);transition:.18s}
+nav.tabs button.on{background:#fff;color:var(--accent);box-shadow:0 1px 3px rgba(20,30,60,.1)}
+
+/* ---------- card ---------- */
+.card{
+  background:var(--card);border-radius:var(--radius);padding:24px 22px 20px;
+  box-shadow:0 1px 2px rgba(20,30,60,.05),0 8px 24px rgba(20,30,60,.055);
+  border:1px solid rgba(228,231,239,.9);cursor:pointer;
+  animation:fadeUp .3s ease both;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.card__top{display:flex;align-items:center;gap:8px;margin-bottom:16px}
+.chip{font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:99px;background:var(--soft);color:var(--accent);letter-spacing:.2px}
+.chip--new{background:#fdf4e3;color:var(--warn)}
+.chip--jd{background:#eaf6f3;color:#0b7268}
+.term{font-size:25px;font-weight:700;line-height:1.35;letter-spacing:-.2px;word-break:break-word}
+.term .en{display:block;font-size:12px;font-weight:500;color:var(--ink3);letter-spacing:.6px;text-transform:uppercase;margin-top:6px}
+.hint{margin-top:22px;font-size:12.5px;color:var(--ink3);display:flex;align-items:center;gap:7px}
+.hint::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--accent);opacity:.55}
+.hint .kbd{display:inline-block;padding:1px 6px;border-radius:5px;border:1px solid var(--line);background:#fafbfe;font-size:11px;font-family:ui-monospace,monospace}
+
+.back{display:none;margin-top:6px}
+.card.revealed .back{display:block;animation:fadeUp .26s ease both}
+.card.revealed .hint{display:none}
+.sec{padding:14px 0;border-top:1px dashed var(--line)}
+.sec:first-child{border-top:none;padding-top:16px}
+.lbl{font-size:11.5px;font-weight:700;color:var(--ink3);letter-spacing:1.2px;margin-bottom:7px;display:flex;align-items:center;gap:6px}
+.lbl::before{content:"";width:3px;height:11px;border-radius:2px;background:var(--accent)}
+.one{font-size:15.5px;color:var(--ink);line-height:1.75}
+.pts{list-style:none;display:grid;gap:8px}
+.pts li{position:relative;padding-left:15px;font-size:13.8px;color:var(--ink2);line-height:1.72}
+.pts li::before{content:"";position:absolute;left:2px;top:9px;width:5px;height:5px;border-radius:50%;background:#c5cee0}
+.sec--use .lbl::before{background:var(--teal)}
+.sec--jd{background:#f3f7fd;margin:0 -10px;padding:13px 10px;border-radius:11px;border-top:none}
+.sec--jd .lbl::before{background:var(--accent)}
+.sec--jd p{font-size:13.8px;color:#22406e;line-height:1.72}
+.sec--trap{background:#fdf8f2;margin:4px -10px 0;padding:14px 10px;border-radius:11px;border-top:none}
+.sec--trap .lbl::before{background:var(--warn)}
+.sec--trap p{font-size:13.8px;color:#7a4a08;line-height:1.72}
+.sec--use p{font-size:13.8px;color:var(--ink2);line-height:1.72}
+
+/* ---------- rating ---------- */
+.rate{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:16px}
+.rate button{padding:11px 4px;border-radius:11px;font-size:13px;font-weight:600;border:1px solid var(--line);background:#fff;transition:.15s;color:var(--ink2)}
+.rate button:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(20,30,60,.09)}
+.rate button span{display:block;font-size:10.5px;font-weight:500;color:var(--ink3);margin-top:1px}
+.rate .q0{border-color:#f0d5d1;color:var(--danger)}
+.rate .q3{border-color:#f3e2c7;color:var(--warn)}
+.rate .q4{border-color:#cfe0f2;color:var(--accent)}
+.rate .q5{border-color:#cbe8e2;color:var(--teal)}
+
+/* ---------- done ---------- */
+.done{background:#fff;border-radius:var(--radius);padding:40px 24px;text-align:center;border:1px solid var(--line);box-shadow:0 8px 24px rgba(20,30,60,.05)}
+.done h2{font-size:21px;margin-bottom:8px}
+.done p{font-size:13.5px;color:var(--ink3);margin-bottom:22px}
+.done__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 0 24px}
+.done__grid div{background:var(--soft);border-radius:12px;padding:12px 8px}
+.done__grid b{display:block;font-size:20px;color:var(--accent)}
+.done__grid span{font-size:11.5px;color:var(--ink3)}
+.btn{display:inline-block;padding:11px 22px;border-radius:11px;background:var(--accent);color:#fff;font-size:13.5px;font-weight:600;transition:.15s}
+.btn:hover{background:var(--accent-2)}
+.btn--ghost{background:#fff;color:var(--accent);border:1px solid var(--line)}
+.btn--ghost:hover{background:var(--soft)}
+
+/* ---------- quiz ---------- */
+.qcard{background:#fff;border-radius:var(--radius);padding:24px 22px;border:1px solid var(--line);box-shadow:0 8px 24px rgba(20,30,60,.05)}
+.qask{font-size:12px;color:var(--ink3);letter-spacing:.5px;margin-bottom:12px}
+.qtext{font-size:17px;line-height:1.72;color:var(--ink);font-weight:500}
+.opts{display:grid;gap:9px;margin-top:22px}
+.opt{text-align:left;padding:13px 15px;border-radius:11px;border:1px solid var(--line);background:#fff;font-size:14px;transition:.15s;color:var(--ink2)}
+.opt:hover:not(:disabled){border-color:#c3d3ec;background:#fafbfe}
+.opt.right{border-color:#9ed4c8;background:#eefaf7;color:#0b6b60;font-weight:600}
+.opt.wrong{border-color:#eec2bb;background:#fdf1ef;color:#a33a2a}
+.opt:disabled{cursor:default;opacity:.85}
+.qexp{margin-top:18px;padding-top:16px;border-top:1px dashed var(--line);display:none}
+.qexp.on{display:block;animation:fadeUp .25s both}
+.qexp .t{font-weight:700;color:var(--accent);font-size:14px;margin-bottom:6px}
+.qexp p{font-size:13.5px;color:var(--ink2)}
+
+/* ---------- bank ---------- */
+.filters{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
+.filters button{font-size:12.5px;padding:6px 11px;border-radius:99px;border:1px solid var(--line);background:#fff;color:var(--ink2)}
+.filters button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+.search{width:100%;padding:11px 14px;border-radius:11px;border:1px solid var(--line);background:#fff;font-size:14px;margin-bottom:12px;font-family:inherit;color:var(--ink)}
+.search:focus{outline:none;border-color:#b8cdec;box-shadow:0 0 0 3px rgba(27,75,143,.08)}
+.item{background:#fff;border:1px solid var(--line);border-radius:12px;margin-bottom:8px;overflow:hidden}
+.item__h{width:100%;text-align:left;padding:13px 15px;display:flex;align-items:center;gap:10px;font-size:14.5px;font-weight:600;color:var(--ink)}
+.item__h .dot{width:7px;height:7px;border-radius:50%;flex:none}
+.item__h .st{font-size:11px;font-weight:600;padding:2px 7px;border-radius:99px;flex:none;font-variant-numeric:tabular-nums}
+.st--new{background:#eef0f5;color:#8b93a5}
+.st--due{background:#fdf0e4;color:#c2760a}
+.st--ok{background:#e8f2fb;color:#1b4b8f}
+.item__h .cat{margin-left:auto;font-size:11px;font-weight:500;color:var(--ink3);flex:none;white-space:nowrap}
+.item__b{display:none;padding:0 15px 14px;font-size:13.5px;color:var(--ink2);line-height:1.75}
+.item.open .item__b{display:block;animation:fadeUp .2s both}
+.item__b .k{color:var(--ink3);font-size:11.5px;font-weight:700;letter-spacing:.8px;display:block;margin:10px 0 3px}
+
+/* ---------- stats ---------- */
+.panel{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin-bottom:14px}
+.panel h3{font-size:13px;color:var(--ink3);letter-spacing:1px;font-weight:700;margin-bottom:14px}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.kpis div{text-align:center}
+.kpis b{display:block;font-size:22px;color:var(--ink);font-weight:700}
+.kpis span{font-size:11.5px;color:var(--ink3)}
+.heat{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.heat i{aspect-ratio:1;border-radius:4px;background:#eceff6;display:block;position:relative}
+.heat i.l1{background:#d5e2f4}.heat i.l2{background:#a8c2e6}.heat i.l3{background:#5f8cc9}.heat i.l4{background:#1b4b8f}
+.cat-row{margin-bottom:11px}
+.cat-row__t{display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink2);margin-bottom:5px}
+.cat-row__t b{color:var(--ink3);font-weight:600}
+.bar{height:6px;border-radius:99px;background:#eceff6;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent),#3b7dd8);transition:width .4s}
+.tools{display:flex;gap:9px;flex-wrap:wrap}
+.tools button,.tools label{padding:9px 15px;border-radius:10px;border:1px solid var(--line);background:#fff;font-size:13px;color:var(--ink2);cursor:pointer}
+.tools button:hover,.tools label:hover{background:var(--soft)}
+.tools .danger{color:var(--danger);border-color:#f0d5d1}
+.sel{padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:#fff;font-size:13px;font-family:inherit;color:var(--ink2)}
+.foot{text-align:center;font-size:11.5px;color:#aab0bd;margin-top:26px;line-height:1.9}
+@media(max-width:520px){
+  .term{font-size:22px}
+  .rate{grid-template-columns:repeat(2,1fr)}
+  .kpis{grid-template-columns:repeat(2,1fr);gap:14px}
+  .card{padding:20px 17px 17px}
+  .sec--trap{margin:4px -6px 0;padding:13px 8px}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top__bar"><div class="top__fill" id="bar"></div></div>
+  <div class="wrap top__in">
+    <div class="brand"><span class="mark"></span><span id="brand">概念卡片</span></div>
+    <div class="top__meta">
+      <span id="metaToday">今日 0/0</span>
+      <span class="streak" id="metaStreak">连续 0 天</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <nav class="tabs">
+    <button data-v="today" class="on">今日</button>
+    <button data-v="quiz">四选一</button>
+    <button data-v="bank">题库</button>
+    <button data-v="data">数据</button>
+  </nav>
+
+  <section id="v-today"></section>
+  <section id="v-quiz" hidden></section>
+  <section id="v-bank" hidden></section>
+  <section id="v-data" hidden></section>
+
+  <div class="foot">
+    间隔重复调度 · 进度自动备份 · 断网可用<br>
+    加到主屏即可离线打开，进度存在本机
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   数据：每条形如 [分类, 术语, 英文, 一句话定义, 要点(用|分隔), 工程用法, 易踩的坑]
+   ============================================================ */
+/* 卡片与分类全部来自同目录的 cards.json（由 merge_cards.py 维护）。
+   引擎里不内置任何领域内容：换一个领域 = 换一份 cards.json，不用改代码。 */
+
+/* ============================================================
+   分类
+   ============================================================ */
+/* key → [名称, 颜色, 岗位场景]，运行时由 cards.json 的 cats 填充 */
+const CATS = {};
+const CAT_FALLBACK = ['其他', '#666666', '通用概念'];
+const catMeta = k => CATS[k] || CAT_FALLBACK;
+
+const CARDS = [];
+const BYID = {};
+
+
+/* ============================================================
+   工具
+   ============================================================ */
+const $  = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const pad = n => String(n).padStart(2, '0');
+const ymd = d => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+const todayStr = () => ymd(new Date());
+function addDays(s, n) {
+  const p = s.split('-').map(Number);
+  return ymd(new Date(p[0], p[1] - 1, p[2] + n));
+}
+function escapeHTML(s) {
+  return String(s).replace(/[&<>"]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[m]));
+}
+
+/* ============================================================
+   状态与持久化
+
+   只用 localStorage 不够：清缓存、无痕模式、iOS 回收长期不访问站点
+   的存储，都会把「学到哪了」抹掉。所以这里做三层：
+     1. localStorage  同步读写，首屏不等
+     2. IndexedDB     镜像备份，启动时取两者中较新的那份
+     3. storage.persist()  申请持久化，降低被系统清理的概率
+   ============================================================ */
+const KEY = 'engdrill.v1';
+const IDB_NAME = 'engdrill';
+const IDB_STORE = 'kv';
+
+let S = (() => {
+  try { return JSON.parse(localStorage.getItem(KEY)) || null; } catch (e) { return null; }
+})() || { v: 1, newLimit: 8, cards: {}, days: {}, updatedAt: 0 };
+S.cards = S.cards || {}; S.days = S.days || {};
+if (!S.newLimit) S.newLimit = 8;
+if (!S.updatedAt) S.updatedAt = 0;
+
+/* ---------- IndexedDB 镜像 ----------
+   注意：这里必须复用同一个连接，并且把写入串成队列。
+   否则连续评分时多个事务并发、完成顺序不定，最后落盘的可能是
+   较早的快照（实测会只剩 1 张卡），进度就这样丢了。 */
+let _dbp = null;
+let _writeChain = Promise.resolve();
+
+function idbOpen() {
+  if (_dbp) return _dbp;
+  _dbp = new Promise((res, rej) => {
+    if (!('indexedDB' in window)) return rej(new Error('no idb'));
+    const r = indexedDB.open(IDB_NAME, 1);
+    r.onupgradeneeded = () => {
+      if (!r.result.objectStoreNames.contains(IDB_STORE)) r.result.createObjectStore(IDB_STORE);
+    };
+    r.onsuccess = () => res(r.result);
+    r.onerror = () => rej(r.error);
+  }).catch(e => { _dbp = null; throw e; });
+  return _dbp;
+}
+
+function idbSet(k, v) {
+  _writeChain = _writeChain
+    .then(() => idbOpen())
+    .then(db => new Promise((res, rej) => {
+      const tx = db.transaction(IDB_STORE, 'readwrite');
+      tx.objectStore(IDB_STORE).put(v, k);
+      tx.oncomplete = () => res(true);
+      tx.onerror = () => rej(tx.error);
+      tx.onabort = () => rej(tx.error);
+    }))
+    .catch(() => false);
+  return _writeChain;
+}
+
+function idbGet(k) {
+  return _writeChain
+    .then(() => idbOpen())
+    .then(db => new Promise((res, rej) => {
+      const tx = db.transaction(IDB_STORE, 'readonly');
+      const rq = tx.objectStore(IDB_STORE).get(k);
+      rq.onsuccess = () => res(rq.result || null);
+      rq.onerror = () => rej(rq.error);
+    }))
+    .catch(() => null);
+}
+
+const save = () => {
+  S.updatedAt = Date.now();
+  try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {}
+  idbSet(KEY, JSON.parse(JSON.stringify(S)));   // 异步镜像，不阻塞交互
+};
+
+/* localStorage 被清过时，从 IndexedDB 把进度捞回来。
+   不设超时竞速：首屏已经用 localStorage 渲染完了，这里慢一点不影响可见速度，
+   反而能避免"备份明明在、却被超时判成没有"的误伤。 */
+function restoreFromIDB() {
+  return idbGet(KEY).then(remote => {
+    if (!remote || !remote.cards) return false;
+    if ((remote.updatedAt || 0) <= (S.updatedAt || 0)) return false;
+    S = remote;
+    S.cards = S.cards || {}; S.days = S.days || {};
+    if (!S.newLimit) S.newLimit = 8;
+    if (!S.updatedAt) S.updatedAt = 0;
+    try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {}
+    return true;
+  }).catch(() => false);
+}
+
+/* 申请持久化存储：告诉浏览器这份数据要长期保留 */
+function requestPersist() {
+  try {
+    if (navigator.storage && navigator.storage.persist) {
+      navigator.storage.persisted()
+        .then(has => { if (!has) return navigator.storage.persist(); })
+        .catch(() => {});
+    }
+  } catch (e) {}
+}
+
+function todayRec() {
+  const t = todayStr();
+  if (!S.days[t]) S.days[t] = { n: 0, r: 0 };
+  return S.days[t];
+}
+function streak() {
+  let n = 0, d = todayStr();
+  const rec = S.days[d];
+  if (rec && rec.n + rec.r > 0) { n = 1; d = addDays(d, -1); }
+  while (true) {
+    const r = S.days[d];
+    if (!r || r.n + r.r === 0) break;
+    n++; d = addDays(d, -1);
+  }
+  return n;
+}
+
+/* ============================================================
+   调度：SM-2 变体
+   ============================================================ */
+function nextState(prev, q) {
+  const s = Object.assign({ ef: 2.5, reps: 0, ivl: 0, lapses: 0, seen: 0 }, prev || {});
+  s.seen = (s.seen || 0) + 1;
+  s.last = todayStr();
+  if (q === 0) {
+    s.lapses = (s.lapses || 0) + 1;
+    s.reps = 0;
+    s.ivl = 0;
+    s.ef = Math.max(1.3, s.ef - 0.2);
+    s.due = todayStr();
+    return s;
+  }
+  const ef = s.ef;
+  if (q === 3) {
+    s.ivl = s.ivl ? Math.max(1, Math.round(s.ivl * 1.2)) : 1;
+    s.ef = Math.max(1.3, ef - 0.15);
+  } else if (q === 4) {
+    s.ivl = !s.ivl ? 1 : (s.reps <= 1 ? 6 : Math.max(2, Math.round(s.ivl * ef)));
+  } else {
+    s.ivl = !s.ivl ? 3 : Math.max(Math.round(s.ivl * ef * 1.3), s.ivl + 2);
+    s.ef = Math.min(3.0, ef + 0.1);
+  }
+  s.reps = (s.reps || 0) + 1;
+  s.due = addDays(todayStr(), s.ivl);
+  return s;
+}
+
+/* ============================================================
+   今日队列
+   ============================================================ */
+let QUEUE = [], IDX = 0;
+
+function newPool() {
+  const g = {};
+  CARDS.forEach(c => { if (!S.cards[c.id]) (g[c.cat] = g[c.cat] || []).push(c); });
+  const out = [];
+  let more = true;
+  while (more) {
+    more = false;
+    Object.keys(CATS).forEach(k => {
+      if (g[k] && g[k].length) { out.push(g[k].shift()); more = true; }
+    });
+  }
+  return out;
+}
+function duePool() {
+  const t = todayStr();
+  return CARDS
+    .filter(c => S.cards[c.id] && S.cards[c.id].due <= t)
+    .sort((a, b) => (S.cards[a.id].due < S.cards[b.id].due ? -1 : 1));
+}
+function buildDeck() {
+  const rec = todayRec();
+  const allowNew = Math.max(0, S.newLimit - rec.n);
+  const nw = newPool().slice(0, allowNew).map(c => ({ c, isNew: true }));
+  const dv = duePool().map(c => ({ c, isNew: false }));
+  QUEUE = [];
+  let i = 0, j = 0;
+  while (i < nw.length || j < dv.length) {
+    if (i < nw.length) QUEUE.push(nw[i++]);
+    if (j < dv.length) QUEUE.push(dv[j++]);
+  }
+  IDX = 0;
+}
+
+/* ============================================================
+   渲染：今日
+   ============================================================ */
+const V = { today: $('#v-today'), quiz: $('#v-quiz'), bank: $('#v-bank'), data: $('#v-data') };
+
+function chipHTML(cat, extra) {
+  const m = CATS[cat] || ['其他', '#666'];
+  return '<span class="chip" style="color:' + m[1] + ';background:' + m[1] + '14">' + escapeHTML(m[0]) + '</span>' + (extra || '');
+}
+
+function renderToday() {
+  if (IDX >= QUEUE.length) {
+    const rec = todayRec();
+    const total = Object.keys(S.cards).length;
+    const left = duePool().length + Math.max(0, S.newLimit - rec.n);
+    V.today.innerHTML =
+      '<div class="done">' +
+        '<h2>' + (rec.n + rec.r > 0 ? '今天这一轮走完了' : '今天还没有卡片') + '</h2>' +
+        '<p>' + (rec.n + rec.r > 0 ? '间隔重复的意义在于明天还记得，不在于今天看完。' : '点下面的按钮开始今日推送。') + '</p>' +
+        '<div class="done__grid">' +
+          '<div><b>' + rec.n + '</b><span>今日新学</span></div>' +
+          '<div><b>' + rec.r + '</b><span>今日复习</span></div>' +
+          '<div><b>' + total + '</b><span>累计学过</span></div>' +
+        '</div>' +
+        '<a class="btn" href="#" data-act="' + (left > 0 ? 'restart' : 'quiz') + '">' +
+          (left > 0 ? '再看一轮' : '去做四选一') + '</a>' +
+        (left > 0 ? '<div style="margin-top:12px"><a class="btn btn--ghost" href="#" data-act="quiz">去做四选一</a></div>' : '') +
+      '</div>';
+    updateHead();
+    return;
+  }
+  const item = QUEUE[IDX], c = item.c;
+  const st = S.cards[c.id];
+  const pts = c.pts.map(p => '<li>' + escapeHTML(p) + '</li>').join('');
+  V.today.innerHTML =
+    '<div class="card" id="card">' +
+      '<div class="card__top">' + chipHTML(c.cat,
+        (item.isNew ? '<span class="chip chip--new">新卡</span>' : (st && st.ivl ? '<span class="chip">间隔 ' + st.ivl + ' 天</span>' : ''))
+      ) + '</div>' +
+      '<h2 class="term">' + escapeHTML(c.term) + '<span class="en">' + escapeHTML(c.en) + '</span></h2>' +
+      '<div class="hint">点击卡片翻面<span class="kbd">空格</span></div>' +
+      '<div class="back">' +
+        '<div class="sec"><div class="lbl">一句话定义</div><p class="one">' + escapeHTML(c.one) + '</p></div>' +
+        '<div class="sec sec--jd"><div class="lbl">岗位场景 · 为什么考它</div><p>' + escapeHTML(c.jd || catMeta(c.cat)[2] || '') + '</p></div>' +
+        '<div class="sec"><div class="lbl">原理与要点</div><ul class="pts">' + pts + '</ul></div>' +
+        '<div class="sec sec--use"><div class="lbl">工程上怎么用</div><p>' + escapeHTML(c.use) + '</p></div>' +
+        '<div class="sec sec--trap"><div class="lbl">容易踩的坑</div><p>' + escapeHTML(c.trap) + '</p></div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="rate" id="rate" hidden>' +
+      '<button class="q0" data-q="0">忘了<span>稍后再来</span></button>' +
+      '<button class="q3" data-q="3">有点难<span>拉长一点</span></button>' +
+      '<button class="q4" data-q="4">记得<span>正常间隔</span></button>' +
+      '<button class="q5" data-q="5">太简单<span>跳更远</span></button>' +
+    '</div>';
+  updateHead();
+}
+
+function reveal() {
+  const card = $('#card'); if (!card || card.classList.contains('revealed')) return;
+  card.classList.add('revealed');
+  const r = $('#rate'); if (r) r.hidden = false;
+}
+function rate(q) {
+  const item = QUEUE[IDX]; if (!item) return;
+  const c = item.c;
+  const st = nextState(S.cards[c.id], q);
+  S.cards[c.id] = st;
+  const rec = todayRec();
+  if (item.isNew) rec.n++; else rec.r++;
+  if (st.due <= todayStr()) QUEUE.push({ c: c, isNew: false });
+  save();
+  IDX++;
+  renderToday();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateHead() {
+  const rec = todayRec();
+  const done = rec.n + rec.r;
+  $('#metaToday').textContent = '今日 ' + done + ' 张';
+  const s = streak();
+  const el = $('#metaStreak');
+  el.textContent = '连续 ' + s + ' 天';
+  el.className = 'streak' + (s > 0 ? ' on' : '');
+  const total = Math.max(QUEUE.length, 1);
+  const pct = IDX >= QUEUE.length ? 100 : Math.round(IDX / total * 100);
+  $('#bar').style.width = pct + '%';
+}
+
+/* ============================================================
+   渲染：四选一
+   ============================================================ */
+let QZ = null;
+
+function shuffle(a) {
+  const b = a.slice();
+  for (let i = b.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const t = b[i]; b[i] = b[j]; b[j] = t;
+  }
+  return b;
+}
+
+function pickQuiz() {
+  const pool = duePool().concat(CARDS.filter(c => !S.cards[c.id]).slice(0, 20));
+  const src = pool.length ? pool : CARDS;
+  const target = src[Math.floor(Math.random() * src.length)];
+  const same = shuffle(CARDS.filter(c => c.cat === target.cat && c.id !== target.id)).slice(0, 2);
+  const rest = shuffle(CARDS.filter(c => c.cat !== target.cat)).slice(0, 3 - same.length);
+  QZ = { target: target, opts: shuffle([target].concat(same, rest)), answered: false };
+  renderQuiz();
+}
+function renderQuiz() {
+  if (!QZ) return pickQuiz();
+  const t = QZ.target;
+  const opts = QZ.opts.map(o =>
+    '<button class="opt" data-id="' + o.id + '">' + escapeHTML(o.term) + '</button>'
+  ).join('');
+  V.quiz.innerHTML =
+    '<div class="qcard">' +
+      '<div class="qask">' + escapeHTML((CATS[t.cat] || [''])[0]) + ' · 下面这段说的是哪个概念</div>' +
+      '<div class="qtext">' + escapeHTML(t.one) + '</div>' +
+      '<div class="opts" id="opts">' + opts + '</div>' +
+      '<div class="qexp" id="qexp">' +
+        '<div class="t">' + escapeHTML(t.term) + '</div>' +
+        '<p>' + escapeHTML(t.use) + '</p>' +
+        '<p style="margin-top:8px;color:#7a4a08"><b>坑：</b>' + escapeHTML(t.trap) + '</p>' +
+      '</div>' +
+    '</div>' +
+    '<div style="margin-top:14px;text-align:center" id="qfoot" hidden><a class="btn btn--ghost" href="#" data-act="nextq">下一题</a></div>';
+  updateHead();
+}
+function answer(id) {
+  if (!QZ || QZ.answered) return;
+  QZ.answered = true;
+  const ok = id === QZ.target.id;
+  $$('#opts .opt').forEach(b => {
+    b.disabled = true;
+    if (b.dataset.id === QZ.target.id) b.classList.add('right');
+    else if (b.dataset.id === id) b.classList.add('wrong');
+  });
+  $('#qexp').classList.add('on');
+  const foot = $('#qfoot'); if (foot) foot.hidden = false;
+  const c = QZ.target;
+  S.cards[c.id] = nextState(S.cards[c.id], ok ? 4 : 0);
+  const rec = todayRec();
+  if (S.cards[c.id].seen === 1) rec.n++; else rec.r++;
+  save();
+  updateHead();
+}
+
+/* ============================================================
+   渲染：题库
+   ============================================================ */
+let bankCat = 'all', bankQ = '', bankState = 'all';
+function renderBank() {
+  const cats = Object.keys(CATS).map(k =>
+    '<button data-cat="' + k + '" class="' + (bankCat === k ? 'on' : '') + '">' + CATS[k][0] + '</button>'
+  ).join('');
+
+  const t = todayStr();
+  const nNew = CARDS.filter(c => !S.cards[c.id]).length;
+  const nDue = CARDS.filter(c => S.cards[c.id] && S.cards[c.id].due <= t).length;
+  const nDone = CARDS.length - nNew - nDue;
+
+  let list = CARDS.filter(c => bankCat === 'all' || c.cat === bankCat);
+  if (bankQ) {
+    const q = bankQ.toLowerCase();
+    list = list.filter(c => (c.term + c.en + c.one + c.pts.join('')).toLowerCase().indexOf(q) >= 0);
+  }
+  if (bankState === 'new') list = list.filter(c => !S.cards[c.id]);
+  if (bankState === 'due') list = list.filter(c => S.cards[c.id] && S.cards[c.id].due <= t);
+  if (bankState === 'done') list = list.filter(c => S.cards[c.id] && S.cards[c.id].due > t);
+
+  const items = list.map(c => {
+    const m = CATS[c.cat] || ['', '#999'];
+    const st = S.cards[c.id];
+    const isDue = st && st.due <= t;
+    const lvl = !st ? 0 : (st.ivl >= 21 ? 3 : st.ivl >= 6 ? 2 : 1);
+    const col = ['#d3d8e3', '#e0b467', '#5f9ea0', '#1b4b8f'][lvl];
+    const badge = !st
+      ? '<span class="st st--new">未学</span>'
+      : isDue
+        ? '<span class="st st--due">待复习</span>'
+        : '<span class="st st--ok">隔 ' + st.ivl + ' 天</span>';
+    let sched = '';
+    if (st) {
+      const dl = Math.round((new Date(st.due + 'T00:00:00') - new Date(t + 'T00:00:00')) / 86400000);
+      sched = '<span class="k">复习计划</span>已复习 ' + (st.n || 1) + ' 次，当前间隔 ' + st.ivl + ' 天，' +
+        (dl <= 0 ? '今天到期' : dl + ' 天后（' + st.due + '）');
+    }
+    return '<div class="item" data-id="' + c.id + '">' +
+      '<button class="item__h"><span class="dot" style="background:' + col + '"></span>' +
+        escapeHTML(c.term) + badge + '<span class="cat">' + escapeHTML(m[0]) + '</span></button>' +
+      '<div class="item__b">' +
+        '<span class="k">定义</span>' + escapeHTML(c.one) +
+        '<span class="k">岗位场景</span>' + escapeHTML(c.jd || catMeta(c.cat)[2] || '') +
+        '<span class="k">要点</span><ul class="pts" style="margin-top:2px">' + c.pts.map(p => '<li>' + escapeHTML(p) + '</li>').join('') + '</ul>' +
+        '<span class="k">用法</span>' + escapeHTML(c.use) +
+        '<span class="k">坑</span>' + escapeHTML(c.trap) +
+        (c.ev ? '<span class="k">岗位证据</span>' +
+          (c.ev.jobs ? c.ev.jobs + ' 个岗位提到过' : '') +
+          (c.ev.sample ? '　「' + escapeHTML(c.ev.sample) + '」' : '') : '') +
+        sched +
+      '</div></div>';
+  }).join('');
+
+  const states = [['all', '全部', CARDS.length], ['new', '未学', nNew], ['due', '待复习', nDue], ['done', '已学', nDone]];
+  V.bank.innerHTML =
+    '<input class="search" id="bankSearch" placeholder="搜索术语、英文或关键词…" value="' + escapeHTML(bankQ) + '">' +
+    '<div class="filters">' + states.map(s =>
+      '<button data-state="' + s[0] + '" class="' + (bankState === s[0] ? 'on' : '') + '">' + s[1] + ' ' + s[2] + '</button>'
+    ).join('') + '</div>' +
+    '<div class="filters"><button data-cat="all" class="' + (bankCat === 'all' ? 'on' : '') + '">全部分类</button>' + cats + '</div>' +
+    (items || '<p style="color:#8b93a5;font-size:13px;padding:20px 0">没有匹配的条目</p>');
+  updateHead();
+}
+
+/* ============================================================
+   渲染：数据
+   ============================================================ */
+function renderData() {
+  const ids = Object.keys(S.cards);
+  const learned = ids.length;
+  const mature = ids.filter(id => S.cards[id].ivl >= 21).length;
+  const dueN = duePool().length;
+  const s = streak();
+
+  // 热力图：最近 35 天
+  let heat = '';
+  for (let i = 34; i >= 0; i--) {
+    const d = addDays(todayStr(), -i);
+    const r = S.days[d];
+    const n = r ? r.n + r.r : 0;
+    const lv = n === 0 ? '' : n < 5 ? 'l1' : n < 12 ? 'l2' : n < 25 ? 'l3' : 'l4';
+    heat += '<i class="' + lv + '" title="' + d + ' · ' + n + ' 张"></i>';
+  }
+
+  // 分类进度
+  const rows = Object.keys(CATS).map(k => {
+    const all = CARDS.filter(c => c.cat === k);
+    const done = all.filter(c => S.cards[c.id]).length;
+    const pct = Math.round(done / all.length * 100);
+    return '<div class="cat-row"><div class="cat-row__t"><span>' + CATS[k][0] +
+      '</span><b>' + done + '/' + all.length + '</b></div><div class="bar"><i style="width:' + pct + '%"></i></div></div>';
+  }).join('');
+
+  V.data.innerHTML =
+    '<div class="panel"><h3>总览</h3><div class="kpis">' +
+      '<div><b>' + learned + '</b><span>已接触</span></div>' +
+      '<div><b>' + mature + '</b><span>长期记忆</span></div>' +
+      '<div><b>' + dueN + '</b><span>待复习</span></div>' +
+      '<div><b>' + s + '</b><span>连续天数</span></div>' +
+    '</div></div>' +
+    '<div class="panel"><h3>近 35 天</h3><div class="heat">' + heat + '</div>' +
+      '<p style="font-size:11.5px;color:#8b93a5;margin-top:10px">每格一天，颜色越深当天过卡越多。</p></div>' +
+    '<div class="panel"><h3>分类进度</h3>' + rows + '</div>' +
+    '<div class="panel"><h3>设置</h3>' +
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">' +
+        '<span style="font-size:13px;color:#4b5568">每日新卡</span>' +
+        '<select class="sel" id="limSel">' +
+          [5, 8, 12, 16, 20].map(n => '<option value="' + n + '"' + (S.newLimit === n ? ' selected' : '') + '>' + n + ' 张</option>').join('') +
+        '</select>' +
+        '<span style="font-size:12px;color:#8b93a5">全库 ' + CARDS.length + ' 张</span>' +
+      '</div>' +
+      '<div class="tools">' +
+        '<button data-act="export">导出进度</button>' +
+        '<label>导入进度<input type="file" id="impFile" accept=".json" hidden></label>' +
+        '<button data-act="refresh">刷新题库</button>' +
+        '<button class="danger" data-act="reset">清空全部进度</button>' +
+      '</div>' +
+      '<p style="font-size:11.5px;color:#8b93a5;margin-top:14px;line-height:1.9">' +
+        '页面版本 ' + APP_BUILD + ' · <b style="color:#4b5568">' + CARDS.length + '</b> 张 · ' +
+        Object.keys(CATS).length + ' 个分类' +
+        (SITE.updated ? '（数据更新于 ' + escapeHTML(SITE.updated) + '）' : '') + '<br>' +
+        (location.protocol === 'file:'
+          ? '当前是本地文件模式，读不到 cards.json；用 http 地址打开才能取到卡片'
+          : '每次打开自动拉最新 cards.json；页面文件本身有更新时点「刷新题库」') + '<br>' +
+        '进度：已学 <b style="color:#4b5568">' + learned + '</b> / ' + CARDS.length + ' 张，存在本机浏览器（localStorage + IndexedDB 双写）' +
+        (S.persisted ? '，已申请持久化存储' : '') + '<br>' +
+        '换设备或想彻底不怕丢，用「导出 / 导入」迁移。' +
+      '</p>' +
+    '</div>';
+  updateHead();
+}
+
+/* ============================================================
+   事件
+   ============================================================ */
+document.addEventListener('click', e => {
+  const tab = e.target.closest('nav.tabs button');
+  if (tab) {
+    const v = tab.dataset.v;
+    $$('nav.tabs button').forEach(b => b.classList.toggle('on', b === tab));
+    Object.keys(V).forEach(k => { V[k].hidden = k !== v; });
+    if (v === 'today') { if (!QUEUE.length) buildDeck(); renderToday(); }
+    if (v === 'quiz') renderQuiz();
+    if (v === 'bank') renderBank();
+    if (v === 'data') renderData();
+    return;
+  }
+
+  const card = e.target.closest('#card');
+  if (card) { reveal(); return; }
+
+  const qb = e.target.closest('.rate button');
+  if (qb) { rate(Number(qb.dataset.q)); return; }
+
+  const opt = e.target.closest('.opt');
+  if (opt) { answer(opt.dataset.id); return; }
+
+  const act = e.target.closest('[data-act]');
+  if (act) {
+    e.preventDefault();
+    const a = act.dataset.act;
+    if (a === 'restart') { buildDeck(); renderToday(); }
+    if (a === 'quiz') { $$('nav.tabs button').forEach(b => b.classList.toggle('on', b.dataset.v === 'quiz')); Object.keys(V).forEach(k => V[k].hidden = k !== 'quiz'); pickQuiz(); }
+    if (a === 'nextq') { pickQuiz(); }
+    if (a === 'refresh') {
+      const u = new URL(location.href);
+      u.searchParams.set('v', Date.now());
+      location.replace(u.toString());
+    }
+    if (a === 'export') {
+      const blob = new Blob([JSON.stringify(S, null, 2)], { type: 'application/json' });
+      const a2 = document.createElement('a');
+      a2.href = URL.createObjectURL(blob);
+      a2.download = 'engdrill-' + todayStr() + '.json';
+      a2.click();
+    }
+    if (a === 'reset') {
+      if (confirm('清空全部学习进度？此操作不可恢复。')) {
+        S = { v: 1, newLimit: S.newLimit, cards: {}, days: {} };
+        save(); buildDeck(); renderData();
+      }
+    }
+    return;
+  }
+
+  const fBtn = e.target.closest('.filters button');
+  if (fBtn && V.bank.contains(fBtn)) {
+    if (fBtn.dataset.state) bankState = fBtn.dataset.state;
+    if (fBtn.dataset.cat) bankCat = fBtn.dataset.cat;
+    renderBank();
+    return;
+  }
+
+  const ih = e.target.closest('.item__h');
+  if (ih) { ih.parentElement.classList.toggle('open'); return; }
+});
+
+document.addEventListener('input', e => {
+  if (e.target.id === 'bankSearch') { bankQ = e.target.value; renderBank(); }
+  if (e.target.id === 'limSel') { S.newLimit = Number(e.target.value); save(); buildDeck(); }
+});
+
+document.addEventListener('change', e => {
+  if (e.target.id === 'impFile') {
+    const f = e.target.files[0]; if (!f) return;
+    const rd = new FileReader();
+    rd.onload = () => {
+      try {
+        const d = JSON.parse(rd.result);
+        if (!d || !d.cards) throw 0;
+        S = d; S.days = S.days || {}; S.newLimit = S.newLimit || 8;
+        save(); buildDeck(); renderData();
+        alert('已导入');
+      } catch (err) { alert('文件格式不对'); }
+    };
+    rd.readAsText(f);
+  }
+});
+
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+  if (V.today.hidden) return;
+  if (e.code === 'Space' || e.code === 'Enter') { e.preventDefault(); reveal(); return; }
+  if (['1', '2', '3', '4'].indexOf(e.key) >= 0) {
+    const card = $('#card');
+    if (card && card.classList.contains('revealed')) rate([0, 3, 4, 5][Number(e.key) - 1]);
+  }
+});
+
+/* ============================================================
+   数据装载：cards.json 是唯一数据源（流水线每天写入并推送）
+   ============================================================ */
+let SITE = { title: '概念卡片', updated: '', total: 0 };
+const APP_BUILD = '2026-10-26';
+
+/* 用术语哈希做稳定 id：cards.json 顺序变化也不会让手机上的进度错位 */
+function stableId(term) {
+  let h = 5381;
+  for (let i = 0; i < term.length; i++) h = ((h * 33) ^ term.charCodeAt(i)) | 0;
+  return 'x' + (h >>> 0).toString(36);
+}
+
+function normTerm(x) {
+  return String(x || '').replace(/[（(][^）)]*[）)]/g, '').replace(/\s+/g, '').toLowerCase();
+}
+
+function registerCat(key, v) {
+  if (!key) return;
+  if (v && typeof v === 'object') {
+    CATS[key] = [v.name || key, v.color || '#666666', v.scene || ''];
+  } else {
+    CATS[key] = [String(v || key), '#666666', ''];
+  }
+}
+
+function addCard(x) {
+  if (!x || !x.term) return false;
+  const term = String(x.term).trim();
+  if (!term) return false;
+  const key = normTerm(term);
+  if (CARDS.some(c => normTerm(c.term) === key)) return false;
+  const id = x.id || stableId(term);
+  if (BYID[id]) return false;
+  const c = {
+    id: id,
+    cat: (x.cat && CATS[x.cat]) ? x.cat : (Object.keys(CATS)[0] || 'misc'),
+    term: term,
+    en: x.en || '',
+    one: x.one || '',
+    pts: (Array.isArray(x.pts) && x.pts.length) ? x.pts.slice(0, 6) : ['（待补充要点）'],
+    use: x.use || '（待补充）',
+    trap: x.trap || '（待补充）',
+    jd: x.jd || '',
+    ev: (x.evidence && typeof x.evidence === 'object') ? x.evidence : null,
+    added: x.added || ''
+  };
+  CARDS.push(c);
+  BYID[c.id] = c;
+  return true;
+}
+
+function applySite(d) {
+  const cats = d.cats || {};
+  Object.keys(cats).forEach(k => registerCat(k, cats[k]));
+  const meta = d.site || {};
+  if (meta.title) {
+    SITE.title = meta.title;
+    document.title = meta.title;
+    const el = document.getElementById('brand');
+    if (el) el.textContent = meta.title;
+  }
+  (Array.isArray(d.cards) ? d.cards : []).forEach(addCard);
+  SITE.updated = d.updated || '';
+  SITE.total = CARDS.length;
+}
+
+function loadSite() {
+  return new Promise(resolve => {
+    let settled = false;
+    const finish = ok => { if (!settled) { settled = true; resolve(ok); } };
+    if (location.protocol === 'file:') return finish(false);
+    const timer = setTimeout(() => finish(false), 6000);
+    fetch('cards.json?t=' + Date.now(), { cache: 'no-store' })
+      .then(r => (r.ok ? r.json() : null))
+      .then(d => { if (!d) return finish(false); applySite(d); finish(true); })
+      .catch(() => finish(false))
+      .then(() => clearTimeout(timer));
+  });
+}
+
+/* ============================================================
+   启动
+   ============================================================ */
+function renderEmpty(ok) {
+  V.today.innerHTML =
+    '<div class="done">' +
+      '<h2>' + (ok ? '题库还是空的' : '没读到 cards.json') + '</h2>' +
+      '<p>' + (ok
+        ? '这个页面只负责刷卡片，内容在 cards.json 里。加几张卡再刷新即可。'
+        : '当前是本地文件模式，或者 cards.json 不在同目录／网络不通。用 http 地址打开更稳。') +
+      '</p>' +
+      '<a class="btn" href="#" onclick="location.reload();return false">重新加载</a>' +
+    '</div>';
+  updateHead();
+}
+
+loadSite().then(ok => {
+  if (!CARDS.length) { renderEmpty(ok); return; }
+  buildDeck();
+  renderToday();
+
+  // 首屏已经用 localStorage 渲染完，再把 IndexedDB 里的备份捞回来比对，
+  // 只有那份更新（通常是 localStorage 被清过）才重新渲染
+  restoreFromIDB().then(hit => {
+    if (hit) { buildDeck(); renderToday(); }
+    requestPersist();
+  });
+
+  // 注册 Service Worker：断网也能打开；file:// 下会静默失败，不影响使用
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  }
+});
+</script>
+</body>
+</html>

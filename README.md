@@ -1,11 +1,14 @@
 # boss_find_skill
 
-BOSS 直聘岗位抓取 · 分析 · 求职匹配 —— 三个 Claude Code / WorkBuddy Skill。
+BOSS 直聘岗位抓取 · 分析 · 求职匹配 · 概念学习 —— 四个 Claude Code / WorkBuddy Skill。
 
 用 CloakBrowser（反检测 Chromium）抓岗位，两阶段采集省 60% 请求，产出可离线查看的 HTML 报告；还能按你的简历给岗位逐条打分，直接给出一份「先投哪几个」的清单。
+再往前一步：**把岗位里的高频概念做成卡片，装到手机主屏每天刷**——招聘需求本身就是最好的考纲。
 
 ```
-boss_setup → 装环境 → boss_scrape → 抓数据 → boss_analyze → 出报告 / 匹配清单
+boss_setup → 装环境
+boss_scrape → 抓数据 → boss_analyze → 出报告 / 匹配清单
+                     ↘ boss_study → 概念卡片 → 手机上每天刷
 ```
 
 ## 包含什么
@@ -15,6 +18,7 @@ boss_setup → 装环境 → boss_scrape → 抓数据 → boss_analyze → 出�
 | `boss-setup` | 一键配置 CloakBrowser + Playwright，验证反检测生效 |
 | `boss-scrape` | 两阶段抓取：先翻列表、再按相关性只取候选岗位详情 |
 | `boss-analyze` | 市场分析报告 + 按简历匹配打分 + 推荐清单导出 |
+| `boss-study` | 岗位需求 → 领域概念卡片 → 可安装到手机、每天刷的间隔重复站点 |
 
 脚本是**随包提供**的，不是让模型现场生成代码——同样的输入得到同样的输出，也方便你自己改。
 
@@ -87,6 +91,25 @@ python skills/boss-analyze/scripts/match.py --input data/xxx_detail.json \
   --csv "data/推荐清单.csv" --html reports/匹配报告.html
 ```
 
+### 4. 做概念卡片（可选）
+
+```bash
+# 从岗位正文抽候选术语（按「被多少个不同岗位提到」排序，不是词频）
+python skills/boss-study/scripts/extract_terms.py \
+  --input data/xxx_detail.json --top 60 --out data/terms.json
+
+# 挑出能讲原理的概念，按八字段写卡，然后校验入池（会拒收空话卡）
+python skills/boss-study/scripts/merge_cards.py \
+  --cards my-study/cards.json --input cands/2026-10-26.json --dry-run
+
+# 生成站点（一个领域一个站）
+python skills/boss-study/scripts/build_site.py \
+  --out my-study --title "机器人感知 · 每日一推" --short "感知卡"
+```
+
+站点是纯静态的，push 到 GitHub Pages 后手机加到主屏即可每天刷。
+详见 `skills/boss-study/SKILL.md`。
+
 ## 实测数据
 
 一次真实运行（5 城 × 9 关键词，2026-10）：
@@ -109,6 +132,20 @@ BOSS 的单关键词召回上限约 90 条，而详情页是主要成本（每�
 1. **`city` 参数会失效**：目标城市岗位少时返回全国岗位。必须按 `location` 字段二次过滤。
 2. **冷门关键词会被降级**：搜「航道工程」可能返回「算法工程师」「酒店前台」，平台用泛结果填空。
 3. **关键词会误命中**：`水工` → 「送水工」，`会计` → 「电话销售」。用 `--noise` 剔掉。
+
+## 抽词为什么能抽出干净术语
+
+从 JD 正文里找术语看着简单，实际有一半工作量在清洗。实测（153 条数据安全岗）踩到的四类噪音：
+
+| 噪音 | 实测 | 处理方式 |
+|---|---|---|
+| 反爬水印插在词内部 | `kanzhun` 出现 21 次，把「抖音」切成「抖kanzhun音」 | 删水印（不补空格），被切开的词自动复原 |
+| 康熙部首冒充汉字 | **532 个** `⽇`(U+2F47) 这类字符，肉眼看不出 | NFKC 归一化还原成「日」 |
+| 跨词碎片 | `数据分`（数据\|分析）、`沟通协`（沟通\|协调） | 分词边界一致率 < 0.75 丢弃 |
+| 单侧固定碎片 | `据安全`（左边永远是「数」） | 左右邻接字熵 < 1.0 bit 丢弃 |
+
+漏斗：`6820 个候选 → 熵过滤 1036 → 边界过滤 725 → 虚词词性 698 → top 60`。
+排序用**提及岗位数**而不是词频——同一个 JD 里出现 20 次，可能只是那家公司的口头习惯。
 
 ## 已知限制
 
