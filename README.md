@@ -1,4 +1,4 @@
-# boss_find_skill · 针对个人简历筛选意向城市的岗位，进而针对岗位需求生成对应的概念复习卡片
+# boss_find_skill · 针对个人简历检索意向城市的岗位，进而针对岗位需求生成对应的概念复习卡片
 
 ![Python](https://img.shields.io/badge/python-3.9+-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
