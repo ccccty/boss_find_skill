@@ -72,6 +72,34 @@ boss-study     抽概念 → 写卡 → 生成站点 → 手机上每天刷   �
 
 `merge_cards.py` 会**拒收**写坏了的卡：只喊口号的 `jd`（命中「该岗位要求掌握」这类空话）、废话 `trap`（「注意安全」）、没有任何量化点的 `pts`。
 
+### 手机上的样子
+
+<table>
+  <tr>
+    <td valign="top" width="33%"><img src="docs/screenshots/01-card-front.png" width="230" alt="卡片正面"></td>
+    <td valign="top" width="33%"><img src="docs/screenshots/02-card-back.png" width="230" alt="卡片背面"></td>
+    <td valign="top" width="33%"><img src="docs/screenshots/03-quiz.png" width="230" alt="四选一"></td>
+  </tr>
+  <tr>
+    <td valign="top"><sub>正面 · 术语与中英文</sub></td>
+    <td valign="top"><sub>翻面 · 岗位场景 / 原理 / 用法 / 踩坑</sub></td>
+    <td valign="top"><sub>四选一 · 同分类干扰项</sub></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td valign="top" width="50%"><img src="docs/screenshots/04-library.png" width="300" alt="题库"></td>
+    <td valign="top" width="50%"><img src="docs/screenshots/05-stats.png" width="300" alt="数据"></td>
+  </tr>
+  <tr>
+    <td valign="top"><sub>题库 · 搜索、状态筛选与分类</sub></td>
+    <td valign="top"><sub>数据 · 进度、连续天数、分类覆盖</sub></td>
+  </tr>
+</table>
+
+> 线上可直接打开体验：<https://ccccty.github.io/study/>（加到主屏后离线可用）
+
 ---
 
 ## 四个 Skill
