@@ -274,7 +274,7 @@ BOSS 单关键词召回上限约 90 条，而详情页是主要成本（每条�
 
 本项目的设计与实现受益于以下开源工作：
 
-- **[eatmoreduck/boss-zhipin-scraper](https://github.com/eatmoreduck/boss-zhipin-scraper)** —— 感谢作者。该项目通过 Chrome DevTools Protocol 复用本地已登录浏览器的真实登录态、绕开前端字体反爬直接取明文薪资，并完整实现了增量写入、跨轮新增标记与多维筛选，是本领域实现最完整的一份开源参考。本项目在「复用真实登录态」「把采集与后续分析彻底分离」「用免责声明划清使用边界」这几点上受其影响很大。
+- **[eatmoreduck/boss-zhipin-scraper](https://github.com/eatmoreduck/boss-zhipin-scraper)** —— 感谢作者。该项目通过 Chrome DevTools Protocol 复用本地已登录浏览器的真实登录态、绕开前端字体反爬直接取明文薪资，并完整实现了增量写入、跨轮新增标记与多维筛选，是本领域实现最完整的一份开源参考。本项目在「复用真实登录态」「把采集与后续分析彻底分离」这几点上受其影响很大。
 - **[TreeWalk/boss-zhipin-skill](https://github.com/TreeWalk/boss-zhipin-skill)** —— `boss-setup` / `boss-scrape` / `boss-analyze` 三个 skill 的初始骨架来自该项目；后续在随包脚本化、两阶段采集、打分模型与报告组件上做了较大重写。
 
 如实说明：本仓库不是上述任何项目的 fork。采集端使用 CloakBrowser + Playwright 独立实现；`boss-study` 与整套卡片体系为本项目自行设计。
