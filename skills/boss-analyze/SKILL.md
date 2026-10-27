@@ -52,9 +52,9 @@ python scripts/match.py --init profile.json
 
 ```json
 "groups": {
-  "专业背景": {"weight": 5, "words": ["港航", "港口", "航道", "水利"]},
-  "数值模拟": {"weight": 5, "words": ["ADCIRC", "水动力", "风暴潮"]},
-  "AI/算法": {"weight": 4, "words": ["Transformer", "LSTM", "时序", "大模型"]}
+  "感知与融合": {"weight": 5, "words": ["激光雷达", "点云", "多模态", "标定"]},
+  "机器人系统": {"weight": 4, "words": ["ROS", "运动规划", "仿真", "抓取"]},
+  "AI/算法": {"weight": 4, "words": ["Transformer", "LSTM", "大模型", "VLA"]}
 }
 ```
 
